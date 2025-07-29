@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/nav.jsx'
 import RequireAuth from './components/requireAuth.jsx'
@@ -14,19 +15,16 @@ import Signin  from './components/auth/signin.jsx'
 
 // education
 import EducationList from './pages/educationList.jsx'
-import EducationForm from './components/forms/educationForm.jsx'
-import EducationEdit from './pages/educationEdit.jsx'
+import EducationForm from './pages/educationForm.jsx'
 
 // projects
 import ProjectList from './pages/projectList.jsx'
-import ProjectForm from './components/forms/projectForm.jsx'
-import ProjectEdit from './pages/projectEdit.jsx'
+import ProjectForm from './pages/projectForm.jsx'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
-
       <Routes>
         {/* public */}
         <Route path="/"          element={<Home          />} />
@@ -37,56 +35,38 @@ export default function App() {
         <Route path="/signin"    element={<Signin        />} />
 
         {/* education protected */}
-        <Route
-          path="/education"
-          element={
-            <RequireAuth>
-              <EducationList />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/education/new"
-          element={
-            <RequireAuth>
-              <EducationForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/education/:id/edit"
-          element={
-            <RequireAuth>
-              <EducationEdit />
-            </RequireAuth>
-          }
-        />
+        <Route path="/education" element={
+          <RequireAuth>
+            <EducationList />
+          </RequireAuth>
+        } />
+        <Route path="/education/new" element={
+          <RequireAuth>
+            <EducationForm />
+          </RequireAuth>
+        } />
+        <Route path="/education/:id/edit" element={
+          <RequireAuth>
+            <EducationForm />
+          </RequireAuth>
+        } />
 
         {/* projects protected */}
-        <Route
-          path="/projects"
-          element={
-            <RequireAuth>
-              <ProjectList />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/projects/new"
-          element={
-            <RequireAuth>
-              <ProjectForm />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/projects/:id/edit"
-          element={
-            <RequireAuth>
-              <ProjectEdit />
-            </RequireAuth>
-          }
-        />
+        <Route path="/projects" element={
+          <RequireAuth>
+            <ProjectList />
+          </RequireAuth>
+        } />
+        <Route path="/projects/new" element={
+          <RequireAuth>
+            <ProjectForm />
+          </RequireAuth>
+        } />
+        <Route path="/projects/:id/edit" element={
+          <RequireAuth>
+            <ProjectForm />
+          </RequireAuth>
+        } />
       </Routes>
     </BrowserRouter>
   )

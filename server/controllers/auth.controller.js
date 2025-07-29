@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import User from '../models/userModel.js'
 import config from '../../config/config.js'
 
-// only name email and password → role defaults to 'User'
+// Registers a new user: name, email, password → role defaults to 'User'
 export async function signup(req, res) {
   const { name, email, password } = req.body
   if (await User.findOne({ email })) {
@@ -13,6 +13,7 @@ export async function signup(req, res) {
   res.status(201).json({ message: 'Signup success' })
 }
 
+// Authenticates existing user and returns JWT and user info
 export async function signin(req, res) {
   const { email, password } = req.body
   const user = await User.findOne({ email })
@@ -30,7 +31,7 @@ export async function signin(req, res) {
   })
 }
 
+// Signs out a user (client should drop the token)
 export function signout(req, res) {
-  // client can simply drop the token
   res.json({ message: 'Signed out' })
 }

@@ -1,29 +1,38 @@
-import { useState, useEffect } from 'react'
+// FILE: projectForm.jsx
+import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getProject, updateProject } from '../api/projects'
+import { createProject, getProject, updateProject } from '../api/projects'
 
-export default function ProjectEdit() {
+export default function ProjectForm() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const isEdit = Boolean(id)
   const [proj, setProj] = useState({
     title: '',
     description: '',
     link: '',
-    error: ''
+    error: '',
+    loading: isEdit
   })
 
   useEffect(() => {
+    if (!id) return
     const auth = JSON.parse(localStorage.getItem('jwt') || '{}')
-    getProject(auth.token, id).then(data => {
-      if (!data.error) {
+    ;(async () => {
+      try {
+        const data = await getProject(auth.token, id)
+        if (data.error) throw new Error(data.error)
         setProj({
           title: data.title,
           description: data.description,
           link: data.link || '',
-          error: ''
+          error: '',
+          loading: false
         })
+      } catch (err) {
+        setProj(prev => ({ ...prev, error: err.message, loading: false }))
       }
-    })
+    })()
   }, [id])
 
   function handleChange(e) {
@@ -34,21 +43,29 @@ export default function ProjectEdit() {
   async function handleSubmit(e) {
     e.preventDefault()
     const auth = JSON.parse(localStorage.getItem('jwt') || '{}')
-    const data = await updateProject(auth.token, id, {
-      title: proj.title,
-      description: proj.description,
-      link: proj.link
-    })
-    if (data.error) {
-      setProj(prev => ({ ...prev, error: data.error }))
-    } else {
+    const { title, description, link } = proj
+    try {
+      const data = isEdit
+        ? await updateProject(auth.token, id, { title, description, link })
+        : await createProject(auth.token, { title, description, link })
+      if (data.error) throw new Error(data.error)
       navigate('/projects')
+    } catch (err) {
+      setProj(prev => ({ ...prev, error: err.message }))
     }
+  }
+
+  if (proj.loading) {
+    return (
+      <main style={{ padding: '1rem' }}>
+        <p>Loading...</p>
+      </main>
+    )
   }
 
   return (
     <main style={{ padding: '1rem' }}>
-      <h1>Edit Project</h1>
+      <h1>{isEdit ? 'Edit Project' : 'Add Project'}</h1>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '400px' }}>
         <input
           name="title"
@@ -75,7 +92,7 @@ export default function ProjectEdit() {
           style={{ padding: '0.5rem' }}
         />
         <button type="submit" style={{ padding: '0.5rem', fontWeight: 'bold' }}>
-          Update
+          {isEdit ? 'Update' : 'Add'}
         </button>
         {proj.error && <p style={{ color: 'red' }}>{proj.error}</p>}
       </form>

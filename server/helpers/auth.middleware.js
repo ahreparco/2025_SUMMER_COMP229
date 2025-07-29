@@ -1,10 +1,11 @@
+// FILE: auth.middleware.js (server-side JWT validation)
 import jwt from 'jsonwebtoken'
 import config from '../../config/config.js'
 
 // ensure request has a valid token
 export function requireSignin(req, res, next) {
   const header = req.headers.authorization
-  if (!header?.startsWith('Bearer ')) {
+  if (!header || !header.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' })
   }
   const token = header.split(' ')[1]
