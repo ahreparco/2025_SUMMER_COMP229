@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getEducation, deleteEducation } from '../api/education'
+import { getEducation, deleteEducation } from '../api/educations'
 
 export default function EducationList() {
   // null means “not loaded yet”
@@ -33,7 +33,7 @@ export default function EducationList() {
     <main style={{ padding: '1rem' }}>
       <h1>Education</h1>
       {isAdmin && (
-        <button onClick={() => navigate('/education/new')}>
+        <button onClick={() => navigate('/educations/new')}>
           New Education
         </button>
       )}
@@ -46,7 +46,7 @@ export default function EducationList() {
               <strong>{e.school}</strong> – {e.degree} ({e.year})
               {isAdmin && (
                 <>
-                  <button onClick={() => navigate(`/education/${e._id}/edit`)}>
+                  <button onClick={() => navigate(`/educations/${e._id}/edit`)}>
                     Edit
                   </button>
                   <button

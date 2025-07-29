@@ -1,4 +1,4 @@
-// FILE: projectForm.jsx
+// src/pages/projectForm.jsx
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { createProject, getProject, updateProject } from '../api/projects'
@@ -7,7 +7,10 @@ export default function ProjectForm() {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEdit = Boolean(id)
+
+  // include firstname to match your schema
   const [proj, setProj] = useState({
+    firstname: '',
     title: '',
     description: '',
     link: '',
@@ -18,21 +21,21 @@ export default function ProjectForm() {
   useEffect(() => {
     if (!id) return
     const auth = JSON.parse(localStorage.getItem('jwt') || '{}')
-    ;(async () => {
-      try {
-        const data = await getProject(auth.token, id)
+    getProject(auth.token, id)
+      .then(data => {
         if (data.error) throw new Error(data.error)
         setProj({
-          title: data.title,
+          firstname: data.firstname,
+          title:     data.title,
           description: data.description,
-          link: data.link || '',
-          error: '',
-          loading: false
+          link:      data.link || '',
+          error:     '',
+          loading:   false
         })
-      } catch (err) {
+      })
+      .catch(err => {
         setProj(prev => ({ ...prev, error: err.message, loading: false }))
-      }
-    })()
+      })
   }, [id])
 
   function handleChange(e) {
@@ -43,11 +46,17 @@ export default function ProjectForm() {
   async function handleSubmit(e) {
     e.preventDefault()
     const auth = JSON.parse(localStorage.getItem('jwt') || '{}')
-    const { title, description, link } = proj
+    const payload = {
+      firstname: proj.firstname,
+      title:     proj.title,
+      description: proj.description,
+      link:      proj.link
+    }
+      console.log('Submitting payload:', payload) 
     try {
       const data = isEdit
-        ? await updateProject(auth.token, id, { title, description, link })
-        : await createProject(auth.token, { title, description, link })
+        ? await updateProject(auth.token, id,     payload)
+        : await createProject(auth.token, payload)
       if (data.error) throw new Error(data.error)
       navigate('/projects')
     } catch (err) {
@@ -58,7 +67,7 @@ export default function ProjectForm() {
   if (proj.loading) {
     return (
       <main style={{ padding: '1rem' }}>
-        <p>Loading...</p>
+        <p>Loading…</p>
       </main>
     )
   }
@@ -66,7 +75,23 @@ export default function ProjectForm() {
   return (
     <main style={{ padding: '1rem' }}>
       <h1>{isEdit ? 'Edit Project' : 'Add Project'}</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '400px' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display:        'flex',
+          flexDirection:  'column',
+          gap:            '0.5rem',
+          maxWidth:       '400px'
+        }}
+      >
+        <input
+          name="firstname"
+          value={proj.firstname}
+          onChange={handleChange}
+          required
+          placeholder="First Name"
+          style={{ padding: '0.5rem' }}
+        />
         <input
           name="title"
           value={proj.title}

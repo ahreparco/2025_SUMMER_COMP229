@@ -1,21 +1,22 @@
+// server/routes/api.routes.js
+
 import express from 'express'
 import Contact   from '../models/contactModel.js'
 import Project   from '../models/projectModel.js'
 import Education from '../models/educationModel.js'
 import User      from '../models/userModel.js'
-import {
-  requireSignin,
-  isAdmin
-} from '../helpers/auth.middleware.js'
+import { requireSignin, isAdmin } from '../helpers/auth.middleware.js'
 
 const router = express.Router()
 
-// helper to wrap async routes
+// helper to wrap async routes & forward errors
 const asyncHandler = fn =>
   (req, res, next) =>
     Promise.resolve(fn(req, res, next)).catch(next)
 
-// CONTACT ROUTES
+//
+// CONTACT ROUTES (protected, admins can create/update/delete)
+//
 router.get(
   '/contacts',
   requireSignin,
@@ -40,6 +41,7 @@ router.post(
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
+    console.log('📥 createContact', req.body)
     const saved = await new Contact(req.body).save()
     res.status(201).json(saved)
   })
@@ -69,7 +71,9 @@ router.delete(
   })
 )
 
-// PROJECT ROUTES
+//
+// PROJECT ROUTES (protected, anyone signed in can list, only admins can mutate)
+//
 router.get(
   '/projects',
   requireSignin,
@@ -94,10 +98,12 @@ router.post(
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
+    console.log('📥 createProject body:', req.body)
     const saved = await new Project(req.body).save()
     res.status(201).json(saved)
   })
 )
+
 
 router.put(
   '/projects/:id',
@@ -123,9 +129,11 @@ router.delete(
   })
 )
 
-// EDUCATION ROUTES
+//
+// EDUCATION ROUTES (protected, anyone signed in can list, only admins can mutate)
+//
 router.get(
-  '/education',
+  '/educations',
   requireSignin,
   asyncHandler(async (req, res) => {
     const items = await Education.find()
@@ -134,7 +142,7 @@ router.get(
 )
 
 router.get(
-  '/education/:id',
+  '/educations/:id',
   requireSignin,
   asyncHandler(async (req, res) => {
     const item = await Education.findById(req.params.id)
@@ -144,17 +152,18 @@ router.get(
 )
 
 router.post(
-  '/education',
+  '/educations',
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
+    console.log('📥 createEducation', req.body)
     const saved = await new Education(req.body).save()
     res.status(201).json(saved)
   })
 )
 
 router.put(
-  '/education/:id',
+  '/educations/:id',
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
@@ -168,7 +177,7 @@ router.put(
 )
 
 router.delete(
-  '/education/:id',
+  '/educations/:id',
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
@@ -177,7 +186,9 @@ router.delete(
   })
 )
 
+//
 // USER ROUTES (Admin only)
+//
 router.get(
   '/users',
   requireSignin,
@@ -204,6 +215,7 @@ router.post(
   requireSignin,
   isAdmin,
   asyncHandler(async (req, res) => {
+    console.log('📥 createUser', req.body)
     const saved = await new User(req.body).save()
     res.status(201).json(saved)
   })

@@ -2,13 +2,9 @@
 import mongoose from 'mongoose';
 
 const educationSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  email: { type: String, required: true },
-  completion: { type: Date, required: true },
-  description: { type: String }
-}, { collection: 'educations/qualifications' }); // important: exact collection name
+  school: { type: String, required: true },
+  degree: { type: String, required: true},
+  year: { type: String, required: true }
+}, { collection: 'educations' });
 
-
-export default mongoose.model('Education', educationSchema);
+export default mongoose.model('Educations', educationSchema);

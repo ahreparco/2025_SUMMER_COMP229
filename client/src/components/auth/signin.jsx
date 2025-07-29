@@ -30,7 +30,7 @@ export default function Signin() {
         setForm(f => ({ ...f, error: data.message }))
       } else {
         localStorage.setItem('jwt', JSON.stringify(data))
-        navigate('/education')
+        navigate('/')
       }
     } catch {
       setForm(f => ({ ...f, error: 'Network error' }))

@@ -1,7 +1,7 @@
 // FILE: educationForm.jsx
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { createEducation, getOneEducation, updateEducation } from '../api/education'
+import { createEducation, getOneEducation, updateEducation } from '../api/educations'
 
 export default function EducationForm() {
   const { id } = useParams()
@@ -49,7 +49,7 @@ export default function EducationForm() {
         ? await updateEducation(auth.token, id, { school, degree, year })
         : await createEducation(auth.token, { school, degree, year })
       if (data.error) throw new Error(data.error)
-      navigate('/education')
+      navigate('/educations')
     } catch (err) {
       setForm(prev => ({ ...prev, error: err.message }))
     }

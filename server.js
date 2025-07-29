@@ -35,6 +35,22 @@ app.get('/profile', protect, (req, res) => {
 // All API routes protected
 app.use('/api', protect, apiRoutes)
 
+// At the very end of server.js, after all your app.use(…) calls:
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('🚨 Unhandled error:', err)
+  res
+    .status(err.status || 500)
+    .json({ error: err.message || 'Internal Server Error' })
+})
+
+// Then start the server
+app.listen(config.port, () =>
+  console.log(`Server started on http://localhost:${config.port}`)
+)
+
+
 // Start the server (ONLY ONCE)
 app.listen(config.port, () =>
   console.log(`Server started on http://localhost:${config.port}`)

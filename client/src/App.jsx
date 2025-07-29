@@ -14,11 +14,11 @@ import Signup  from './components/auth/signup.jsx'
 import Signin  from './components/auth/signin.jsx'
 
 // education
-import EducationList from './pages/educationList.jsx'
+import Educations from './pages/educations.jsx'
 import EducationForm from './pages/educationForm.jsx'
 
 // projects
-import ProjectList from './pages/projectList.jsx'
+import Projects from './pages/projects.jsx'
 import ProjectForm from './pages/projectForm.jsx'
 
 export default function App() {
@@ -35,17 +35,17 @@ export default function App() {
         <Route path="/signin"    element={<Signin        />} />
 
         {/* education protected */}
-        <Route path="/education" element={
+        <Route path="/educations" element={
           <RequireAuth>
-            <EducationList />
+            <Educations />
           </RequireAuth>
         } />
-        <Route path="/education/new" element={
+        <Route path="/educations/new" element={
           <RequireAuth>
             <EducationForm />
           </RequireAuth>
         } />
-        <Route path="/education/:id/edit" element={
+        <Route path="/educations/:id/edit" element={
           <RequireAuth>
             <EducationForm />
           </RequireAuth>
@@ -54,7 +54,7 @@ export default function App() {
         {/* projects protected */}
         <Route path="/projects" element={
           <RequireAuth>
-            <ProjectList />
+            <Projects />
           </RequireAuth>
         } />
         <Route path="/projects/new" element={

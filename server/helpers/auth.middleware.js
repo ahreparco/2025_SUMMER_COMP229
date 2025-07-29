@@ -19,7 +19,7 @@ export function requireSignin(req, res, next) {
 
 // only allow Admin role
 export function isAdmin(req, res, next) {
-  if (req.auth.role !== 'Admin') {
+  if (req.auth.role.toLowerCase() !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' })
   }
   next()

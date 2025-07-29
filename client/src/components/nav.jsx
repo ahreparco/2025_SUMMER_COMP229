@@ -18,13 +18,13 @@ export default function Nav() {
       <Link to="/projects">Projects</Link> {' | '}
       <Link to="/services">Services</Link> {' | '}
       <Link to="/contact">Contact</Link> {' | '}
-      <Link to="/education">Education</Link>
+      <Link to="/educations">Education</Link>
       {isSignedIn && (
         <>
           {' | '}
           <Link to="/projects/new">Add Project</Link>
           {' | '}
-          <Link to="/education/new">Add Education</Link>
+          <Link to="/educations/new">Add Education</Link>
           {' | '}
           <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
             Logout
